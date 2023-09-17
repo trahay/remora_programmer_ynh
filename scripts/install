@@ -55,7 +55,7 @@ chown -R $app:www-data "$install_dir"
 ynh_script_progression --message="Installing dependencies..."
 pushd "$install_dir"
   ynh_use_nodejs
-  ynh_npm install
+  ynh_npm install  --nodejs_version=12
 popd
 
 
