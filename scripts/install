@@ -54,6 +54,7 @@ chown -R $app:www-data "$install_dir"
 #=================================================
 ynh_script_progression --message="Installing dependencies..."
 pushd "$install_dir"
+  ynh_app_setting_set --app=remora_programmer --key=nodejs_version --value=$nodejs_version
   ynh_use_nodejs
   ynh_npm install --nodejs_version=12
 popd
