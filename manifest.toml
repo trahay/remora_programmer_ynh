@@ -65,8 +65,8 @@ ram.runtime = "50M"
         # This will pre-fetch the asset which can then be deployed during the install/upgrade scripts with :
         #    ynh_setup_source --dest_dir="$install_dir"
         # You can also define other assets than "main" and add --source_id="foobar" in the previous command
-        url = "https://github.com/trahay/remora_programmer/archive/refs/tags/0.2.tar.gz"
-        sha256 = "614b3ccef4daa6df8f341a926ca41497d52ab2231e48be3fbce334cfa0497cd9"
+        url = "https://github.com/trahay/remora_programmer/archive/refs/tags/0.3.tar.gz"
+        sha256 = "9009bf4c873c8b7ad8206bfef147cdeec08f6f263852bc29775a0349bae00238"
 
 
     [resources.system_user]
