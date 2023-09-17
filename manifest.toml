@@ -66,7 +66,7 @@ ram.runtime = "50M"
         #    ynh_setup_source --dest_dir="$install_dir"
         # You can also define other assets than "main" and add --source_id="foobar" in the previous command
         url = "https://github.com/trahay/remora_programmer/archive/refs/tags/0.1.tar.gz"
-        sha256 = "3bccaf776dd891a83895b38595ae705eafd2a307b5dd060b9ed493e4a4593763"
+        sha256 = "e9ba966dbb0436084d2e839e18ea9c013c36d2b7bf2a6855018a3d04bd87fe7a"
 
 
     [resources.system_user]
