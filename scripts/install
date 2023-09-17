@@ -80,7 +80,8 @@ ynh_add_nginx_config
 ###		- As well as the section "RESTORE SYSTEMD" in the restore script
 ###		- And the section "SETUP SYSTEMD" in the upgrade script
 
-#port=$(ynh_find_port --port=8080)
+port=$(ynh_find_port --port=8080)
+ynh_script_progression --message="Available port: $port" --weight=1
 
 ynh_script_progression --message="Initializing $app database..." --weight=1
 pushd "$install_dir"
@@ -94,10 +95,6 @@ popd
 
 ynh_script_progression --message="Creating a systemd service for $app..." --weight=1
 
-# Create a dedicated systemd config
-# TODO: change ExecStart in conf/systemd.service ?
-ynh_add_systemd_config
-
 ### `yunohost service add` integrates a service in YunoHost. It then gets
 ### displayed in the admin interface and through the others `yunohost service` commands.
 ### (N.B.: this line only makes sense if the app adds a service to the system!)
@@ -107,9 +104,9 @@ ynh_add_systemd_config
 ###		- As well as the section "INTEGRATE SERVICE IN YUNOHOST" in the restore script
 ###		- And the section "INTEGRATE SERVICE IN YUNOHOST" in the upgrade script
 
-yunohost service add $app --description="Remora programmer website" --log="/var/log/$app/$app.log"
+ynh_add_systemd_config
 
-ynh_add_systemd_config  --others_var="port ynh_node_load_PATH"
+yunohost service add $app --description="Remora programmer website" --log="/var/log/$app/$app.log"
 
 ### `ynh_use_logrotate` is used to configure a logrotate configuration for the logs of this app.
 ### Use this helper only if there is effectively a log file for this app.
@@ -123,7 +120,7 @@ ynh_add_systemd_config  --others_var="port ynh_node_load_PATH"
 ynh_use_logrotate
 
 # Create a dedicated Fail2Ban config
-ynh_add_fail2ban_config --logpath="/var/log/nginx/${domain}-error.log" --failregex="Regex to match into the log for a failed login"
+ynh_add_fail2ban_config --logpath="/var/log/nginx/${domain}-error.log" --failregex="Invalid connection from <ADDR>"
 
 #=================================================
 # APP INITIAL CONFIGURATION
