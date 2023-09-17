@@ -33,22 +33,9 @@ ynh_restore_file --origin_path="$data_dir" --not_mandatory
 chown -R $app:www-data "$data_dir"
 
 #=================================================
-# RESTORE THE MYSQL DATABASE
-#=================================================
-ynh_script_progression --message="Restoring the MySQL database..." --weight=1
-
-ynh_mysql_connect_as --user=$db_user --password=$db_pwd --database=$db_name < ./db.sql
-
-#=================================================
 # RESTORE SYSTEM CONFIGURATIONS
 #=================================================
-# RESTORE THE PHP-FPM CONFIGURATION
-#=================================================
 ynh_script_progression --message="Restoring system configurations related to $app..." --weight=1
-
-# This should be a symetric version of what happens in the install script
-
-ynh_restore_file --origin_path="/etc/php/$phpversion/fpm/pool.d/$app.conf"
 
 ynh_restore_file --origin_path="/etc/nginx/conf.d/$domain.d/$app.conf"
 

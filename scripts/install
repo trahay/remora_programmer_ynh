@@ -50,23 +50,20 @@ ynh_setup_source --dest_dir="$install_dir"
 chown -R $app:www-data "$install_dir"
 
 #=================================================
+# INSTALL DEPENDENCIES
+#=================================================
+ynh_script_progression --message="Installing dependencies..."
+pushd "$install_dir"
+  ynh_use_nodejs
+  ynh_npm install
+popd
+
+
+
+#=================================================
 # SYSTEM CONFIGURATION
 #=================================================
 ynh_script_progression --message="Adding system configurations related to $app..." --weight=1
-
-### `ynh_add_fpm_config` is used to set up a PHP config.
-### You can remove it if your app doesn't use PHP.
-### `ynh_add_fpm_config` will use the files conf/php-fpm.conf
-### If you're not using these lines:
-###		- You can remove these files in conf/.
-###		- Remove the section "BACKUP THE PHP-FPM CONFIGURATION" in the backup script
-###		- Remove also the section "REMOVE PHP-FPM CONFIGURATION" in the remove script
-###		- As well as the section "RESTORE THE PHP-FPM CONFIGURATION" in the restore script
-###		  with the reload at the end of the script.
-###		- And the section "PHP-FPM CONFIGURATION" in the upgrade script
-
-# Create a dedicated PHP-FPM config using the conf/php-fpm.conf or conf/extra_php-fpm.conf
-ynh_add_fpm_config
 
 # Create a dedicated NGINX config using the conf/nginx.conf template
 ynh_add_nginx_config
@@ -82,7 +79,22 @@ ynh_add_nginx_config
 ###		- As well as the section "RESTORE SYSTEMD" in the restore script
 ###		- And the section "SETUP SYSTEMD" in the upgrade script
 
+#port=$(ynh_find_port --port=8080)
+
+ynh_script_progression --message="Initializing $app database..." --weight=1
+pushd "$install_dir"
+  bash init_db.sh
+popd
+
+ynh_script_progression --message="Installing the cron hook for $app..." --weight=1
+pushd "$install_dir"
+  bash install_cron.sh
+popd
+
+ynh_script_progression --message="Creating a systemd service for $app..." --weight=1
+
 # Create a dedicated systemd config
+# TODO: change ExecStart in conf/systemd.service ?
 ynh_add_systemd_config
 
 ### `yunohost service add` integrates a service in YunoHost. It then gets
@@ -94,23 +106,9 @@ ynh_add_systemd_config
 ###		- As well as the section "INTEGRATE SERVICE IN YUNOHOST" in the restore script
 ###		- And the section "INTEGRATE SERVICE IN YUNOHOST" in the upgrade script
 
-yunohost service add $app --description="A short description of the app" --log="/var/log/$app/$app.log"
+yunohost service add $app --description="Remora programmer website" --log="/var/log/$app/$app.log"
 
-### Additional options starting with 3.8:
-###
-### --needs_exposed_ports "$port" a list of ports that needs to be publicly exposed
-###                               which will then be checked by YunoHost's diagnosis system
-###                               (N.B. DO NOT USE THIS if the port is only internal!!!)
-###
-### --test_status "some command"  a custom command to check the status of the service
-###                               (only relevant if 'systemctl status' doesn't do a good job)
-###
-### --test_conf "some command"    some command similar to "nginx -t" that validates the conf of the service
-###
-### Re-calling 'yunohost service add' during the upgrade script is the right way
-### to proceed if you later realize that you need to enable some flags that
-### weren't enabled on old installs (be careful it'll override the existing
-### service though so you should re-provide all relevant flags when doing so)
+ynh_add_systemd_config  --others_var="port ynh_node_load_PATH"
 
 ### `ynh_use_logrotate` is used to configure a logrotate configuration for the logs of this app.
 ### Use this helper only if there is effectively a log file for this app.
@@ -145,13 +143,13 @@ ynh_script_progression --message="Adding a configuration file..." --weight=1
 ###
 ### Check the documentation of `ynh_add_config` for more info.
 
-ynh_add_config --template="some_config_file" --destination="$install_dir/some_config_file"
+# ynh_add_config --template="some_config_file" --destination="$install_dir/some_config_file"
 
 # FIXME: this should be handled by the core in the future
 # You may need to use chmod 600 instead of 400,
 # for example if the app is expected to be able to modify its own config
-chmod 400 "$install_dir/some_config_file"
-chown $app:$app "$install_dir/some_config_file"
+#chmod 400 "$install_dir/some_config_file"
+#chown $app:$app "$install_dir/some_config_file"
 
 ### For more complex cases where you want to replace stuff using regexes,
 ### you shoud rely on ynh_replace_string (which is basically a wrapper for sed)
@@ -170,8 +168,8 @@ chown $app:$app "$install_dir/some_config_file"
 ### forms.
 
 # Installation with curl
-ynh_script_progression --message="Finalizing installation..." --weight=1
-ynh_local_curl "/INSTALL_PATH" "key1=value1" "key2=value2" "key3=value3"
+#ynh_script_progression --message="Finalizing installation..." --weight=1
+#ynh_local_curl "/INSTALL_PATH" "key1=value1" "key2=value2" "key3=value3"
 
 #=================================================
 # GENERIC FINALIZATION

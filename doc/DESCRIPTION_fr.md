@@ -1,1 +1,1 @@
-Ceci est une fausse description des fonctionalités de l'app
+remora_programmer permet de programmer des radiateurs connectés via Remora depuis un serveur (par exemple, un raspbery pi)
