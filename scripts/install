@@ -83,6 +83,18 @@ ynh_add_nginx_config
 port=$(ynh_find_port --port=8080)
 ynh_script_progression --message="Available port: $port" --weight=1
 
+touch "/var/log/$app/access.log"
+touch "/var/log/$app/server.log"
+touch "/var/log/$app/cron.log"
+
+chmod u+rw "/var/log/$app/access.log"
+chmod u+rw "/var/log/$app/server.log"
+chmod u+rw "/var/log/$app/cron.log"
+
+chown $app:$app "/var/log/$app/access.log"
+chown $app:$app "/var/log/$app/server.log"
+chown $app:$app "/var/log/$app/cron.log"
+
 ynh_script_progression --message="Initializing $app database..." --weight=1
 pushd "$install_dir"
   bash init_db.sh
@@ -146,7 +158,7 @@ ynh_script_progression --message="Adding a configuration file..." --weight=1
 # FIXME: this should be handled by the core in the future
 # You may need to use chmod 600 instead of 400,
 # for example if the app is expected to be able to modify its own config
-#chmod 400 "$install_dir/some_config_file"
+#chmod 422"$install_dir/some_config_file"
 #chown $app:$app "$install_dir/some_config_file"
 
 ### For more complex cases where you want to replace stuff using regexes,
