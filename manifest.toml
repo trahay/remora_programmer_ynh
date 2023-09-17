@@ -53,7 +53,7 @@ ram.runtime = "50M"
     # this is a generic question - ask strings are automatically handled by YunoHost's core
     # This won't be saved as setting and will instead be used to initialize the SSOwat permission
     type = "group"
-    default = "visitors"
+    default = "all_users"
 
 [resources]
     # See the packaging documentation for the full set
@@ -65,8 +65,8 @@ ram.runtime = "50M"
         # This will pre-fetch the asset which can then be deployed during the install/upgrade scripts with :
         #    ynh_setup_source --dest_dir="$install_dir"
         # You can also define other assets than "main" and add --source_id="foobar" in the previous command
-        url = "https://github.com/trahay/remora_programmer/archive/refs/tags/0.1.tar.gz"
-        sha256 = "5d1ba5cee4675912c0ec74d176e06ab20facb9bd6393fd6f69b62e3361c3bae5"
+        url = "https://github.com/trahay/remora_programmer/archive/refs/tags/0.2.tar.gz"
+        sha256 = "614b3ccef4daa6df8f341a926ca41497d52ab2231e48be3fbce334cfa0497cd9"
 
 
     [resources.system_user]
